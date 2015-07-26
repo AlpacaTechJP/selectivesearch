@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import skimage.io
 import skimage.feature
 import skimage.color
@@ -6,13 +7,13 @@ import skimage.util
 import skimage.segmentation
 import numpy
 
-SEGMENT_SIGMA = 0.90
-SEGMENT_K = 500
-SEGMENT_MIN = 5
+
+# "Selective Search for Object Recognition" by J.R.R. Uijlings et al.
+#
+#  - Modified version with LBP extractor for texture vectorization
 
 
-def generate_segments(
-        im_orig, scale=SEGMENT_K, sigma=SEGMENT_SIGMA, min_size=SEGMENT_MIN):
+def _generate_segments(im_orig, scale, sigma, min_size):
     """
         segment smallest regions by the algorithm of Felzenswalb and
         Huttenlocher
@@ -31,28 +32,28 @@ def generate_segments(
     return im_orig
 
 
-def sim_colour(r1, r2):
+def _sim_colour(r1, r2):
     """
         calculate the sum of histogram intersection of colour
     """
     return sum([min(a, b) for a, b in zip(r1["hist_c"], r2["hist_c"])])
 
 
-def sim_texture(r1, r2):
+def _sim_texture(r1, r2):
     """
         calculate the sum of histogram intersection of texture
     """
     return sum([min(a, b) for a, b in zip(r1["hist_t"], r2["hist_t"])])
 
 
-def sim_size(r1, r2, imsize):
+def _sim_size(r1, r2, imsize):
     """
         calculate the size similarity over the image
     """
     return 1.0 - (r1["size"] + r2["size"]) / imsize
 
 
-def sim_fill(r1, r2, imsize):
+def _sim_fill(r1, r2, imsize):
     """
         calculate the fill similarity over the image
     """
@@ -63,12 +64,12 @@ def sim_fill(r1, r2, imsize):
     return 1.0 - (bbsize - r1["size"] - r2["size"]) / imsize
 
 
-def calc_sim(r1, r2, imsize):
-    return (sim_colour(r1, r2) + sim_texture(r1, r2)
-            + sim_size(r1, r2, imsize) + sim_fill(r1, r2, imsize))
+def _calc_sim(r1, r2, imsize):
+    return (_sim_colour(r1, r2) + _sim_texture(r1, r2)
+            + _sim_size(r1, r2, imsize) + _sim_fill(r1, r2, imsize))
 
 
-def calc_colour_hist(img):
+def _calc_colour_hist(img):
     """
         calculate colour histogram for each region
 
@@ -97,7 +98,7 @@ def calc_colour_hist(img):
     return hist
 
 
-def calc_texture_gradient(img):
+def _calc_texture_gradient(img):
     """
         calculate texture gradient for entire image
 
@@ -172,7 +173,7 @@ def extract_regions(img):
                 R[l]["max_y"] = y
 
     # pass 2: calculate texture gradient
-    tex_grad = calc_texture_gradient(img)
+    tex_grad = _calc_texture_gradient(img)
 
     # pass 3: calculate colour histogram of each region
     for k, v in R.items():
@@ -180,7 +181,7 @@ def extract_regions(img):
         # colour histogram
         masked_pixels = hsv[:, :, :][img[:, :, 3] == k]
         R[k]["size"] = len(masked_pixels / 4)
-        R[k]["hist_c"] = calc_colour_hist(masked_pixels)
+        R[k]["hist_c"] = _calc_colour_hist(masked_pixels)
 
         # texture histogram
         R[k]["hist_t"] = calc_texture_hist(tex_grad[:, :][img[:, :, 3] == k])
@@ -188,7 +189,7 @@ def extract_regions(img):
     return R
 
 
-def extract_neighbours(regions):
+def _extract_neighbours(regions):
 
     def intersect(a, b):
         if (a["min_x"] < b["min_x"] < a["max_x"]
@@ -212,7 +213,7 @@ def extract_neighbours(regions):
     return neighbours
 
 
-def merge_regions(r1, r2):
+def _merge_regions(r1, r2):
     new_size = r1["size"] + r2["size"]
     rt = {
         "min_x": min(r1["min_x"], r2["min_x"]),
@@ -229,19 +230,36 @@ def merge_regions(r1, r2):
     return rt
 
 
-def selective_search(im_orig, image_size):
-    """
-        Selective Search algorithm
+def selective_search(
+        im_orig, shape=None, segment_sigma=0.9, segment_k=500, segment_min=5):
+    '''Selective Search
 
-        "Selective Search for Object Recognition" by J.R.R. Uijlings et al.
-
-        Modified version with LBP extractor for texture vectorization
-    """
+    Parameters
+    ----------
+        im_orig : ndarray
+            Input image
+        shape : (w, h)
+            If not None, image is resized before processing.
+    Returns
+    -------
+        img : ndarray
+            image with region label
+            region label is stored in the 4th value of each pixel [r,g,b,(region)]
+        regions : array of dict
+            [
+                {
+                    'rect': (left, top, right, bottom),
+                    'labels': [...]
+                },
+                ...
+            ]
+    '''
 
     # load image and get smallest regions
     # region label is stored in the 4th value of each pixel [r,g,b,(region)]
-    im_orig = skimage.transform.resize(im_orig, (image_size, image_size))
-    img = generate_segments(im_orig)
+    if shape is not None:
+        im_orig = skimage.transform.resize(im_orig, shape)
+    img = _generate_segments(im_orig, segment_k, segment_sigma, segment_min)
 
     if img is None:
         return None, {}
@@ -250,12 +268,12 @@ def selective_search(im_orig, image_size):
     R = extract_regions(img)
 
     # extract neighbouring information
-    neighbours = extract_neighbours(R)
+    neighbours = _extract_neighbours(R)
 
     # calculate initial similarities
     S = {}
     for (ai, ar), (bi, br) in neighbours:
-        S[(ai, bi)] = calc_sim(ar, br, imsize)
+        S[(ai, bi)] = _calc_sim(ar, br, imsize)
 
     # hierarchal search
     while S != {}:
@@ -265,7 +283,7 @@ def selective_search(im_orig, image_size):
 
         # merge corresponding regions
         t = max(R.keys()) + 1.0
-        R[t] = merge_regions(R[i], R[j])
+        R[t] = _merge_regions(R[i], R[j])
 
         # mark similarities for regions to be removed
         key_to_delete = []
@@ -280,6 +298,16 @@ def selective_search(im_orig, image_size):
         # calculate similarity set with the new region
         for k in filter(lambda a: a != (i, j), key_to_delete):
             n = k[1] if k[0] in (i, j) else k[0]
-            S[(t, n)] = calc_sim(R[t], R[n], imsize)
+            S[(t, n)] = _calc_sim(R[t], R[n], imsize)
 
-    return img, R
+    regions = []
+    for k, r in R.items():
+        regions.append({
+            'rect': (
+                r['min_x'], r['min_y'],
+                r['max_x'] - r['min_x'], r['max_y'] - r['min_y']),
+            'size': r['size'],
+            'labels': r['labels']
+        })
+
+    return img, regions
