@@ -231,15 +231,19 @@ def _merge_regions(r1, r2):
 
 
 def selective_search(
-        im_orig, shape=None, segment_sigma=0.9, segment_k=500, segment_min=5):
+        im_orig, scale=1.0, sigma=0.8, min_size=50):
     '''Selective Search
 
     Parameters
     ----------
         im_orig : ndarray
             Input image
-        shape : (w, h)
-            If not None, image is resized before processing.
+        scale : int
+            Free parameter. Higher means larger clusters in felzenszwalb segmentation.
+        sigma : float
+            Width of Gaussian kernel for felzenszwalb segmentation.
+        min_size : int
+            Minimum component size for felzenszwalb segmentation.
     Returns
     -------
         img : ndarray
@@ -254,12 +258,11 @@ def selective_search(
                 ...
             ]
     '''
+    assert im_orig.shape[2] == 3, "3ch image is expected"
 
     # load image and get smallest regions
     # region label is stored in the 4th value of each pixel [r,g,b,(region)]
-    if shape is not None:
-        im_orig = skimage.transform.resize(im_orig, shape)
-    img = _generate_segments(im_orig, segment_k, segment_sigma, segment_min)
+    img = _generate_segments(im_orig, scale, sigma, min_size)
 
     if img is None:
         return None, {}
