@@ -116,7 +116,7 @@ def _calc_texture_gradient(img):
     return ret
 
 
-def calc_texture_hist(img):
+def _calc_texture_hist(img):
     """
         calculate texture histogram for each region
 
@@ -144,7 +144,7 @@ def calc_texture_hist(img):
     return hist
 
 
-def extract_regions(img):
+def _extract_regions(img):
 
     R = {}
 
@@ -184,7 +184,7 @@ def extract_regions(img):
         R[k]["hist_c"] = _calc_colour_hist(masked_pixels)
 
         # texture histogram
-        R[k]["hist_t"] = calc_texture_hist(tex_grad[:, :][img[:, :, 3] == k])
+        R[k]["hist_t"] = _calc_texture_hist(tex_grad[:, :][img[:, :, 3] == k])
 
     return R
 
@@ -268,7 +268,7 @@ def selective_search(
         return None, {}
 
     imsize = img.shape[0] * img.shape[1]
-    R = extract_regions(img)
+    R = _extract_regions(img)
 
     # extract neighbouring information
     neighbours = _extract_neighbours(R)
