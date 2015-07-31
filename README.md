@@ -33,5 +33,5 @@ regions
  ...
 ```
 
-See also an example/example.py which generates 
+See also an example/example.py which generates :
 ![alt tag](https://github.com/AlpacaDB/selectivesearch/raw/develop/example/result.png)
