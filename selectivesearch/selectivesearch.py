@@ -198,8 +198,8 @@ def _extract_neighbours(regions):
                 and a["min_y"] < b["max_y"] < a["max_y"]) or (
             a["min_x"] < b["min_x"] < a["max_x"]
                 and a["min_y"] < b["max_y"] < a["max_y"]) or (
-            a["min_x"] < b["min_x"] < a["max_x"]
-                and a["min_y"] < b["max_y"] < a["max_y"]):
+            a["min_x"] < b["max_x"] < a["max_x"]
+                and a["min_y"] < b["min_y"] < a["max_y"]):
             return True
         return False
 
