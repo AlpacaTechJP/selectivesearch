@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="selectivesearch",
-    version="0.1",
+    version="0.2",
     url="https://github.com/AlpacaDB/selectivesearch",
     description="Selective Search implementation for Python",
     author="AlpacaDB, Inc.",
