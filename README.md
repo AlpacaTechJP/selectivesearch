@@ -34,7 +34,7 @@ regions
 ```
 
 See also an example/example.py which generates :
-![alt tag](https://github.com/AlpacaDB/selectivesearch/raw/develop/example/result.png)
+![alt tag](https://github.com/Ethiy/selectivesearch/raw/develop/example/result.png)
 
 ## Blog
 - EN: http://blog.alpaca.ai/open-source-pure-python-selective-search-and-advanced-object-recognition-with-labellio/
