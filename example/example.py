@@ -7,8 +7,8 @@ import selectivesearch
 
 def main():
 
-    # loading lena image
-    img = skimage.data.lena()
+    # loading astronaut image
+    img = skimage.data.astronaut()
 
     # perform selective search
     img_lbl, regions = selectivesearch.selective_search(
