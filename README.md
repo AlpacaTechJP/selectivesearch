@@ -16,21 +16,20 @@ It is super-simple.
 import skimage.data
 import selectivesearch
 
-img = skimage.data.lena()
+img = skimage.data.astronaut()
 img_lbl, regions = selectivesearch.selective_search(img, scale=500, sigma=0.9, min_size=10)
-regions
-=> [{'labels': [0.0], 'rect': (0, 0, 59, 511), 'size': 15633},
- {'labels': [1.0], 'rect': (58, 0, 1, 132), 'size': 173},
- {'labels': [2.0], 'rect': (60, 18, 1, 5), 'size': 8},
- {'labels': [3.0], 'rect': (5, 57, 25, 335), 'size': 507},
- {'labels': [4.0], 'rect': (27, 166, 0, 9), 'size': 10},
- {'labels': [5.0], 'rect': (59, 498, 0, 0), 'size': 1},
- {'labels': [6.0], 'rect': (35, 484, 0, 27), 'size': 28},
- {'labels': [7.0], 'rect': (58, 122, 4, 374), 'size': 581},
- {'labels': [8.0], 'rect': (59, 40, 0, 81), 'size': 82},
- {'labels': [9.0], 'rect': (59, 0, 33, 497), 'size': 2344},
- {'labels': [10.0], 'rect': (66, 258, 22, 60), 'size': 67},
- ...
+regions[:10]
+=>
+[{'labels': [0.0], 'rect': (0, 0, 15, 24), 'size': 260},
+ {'labels': [1.0], 'rect': (13, 0, 1, 12), 'size': 23},
+ {'labels': [2.0], 'rect': (0, 15, 15, 11), 'size': 30},
+ {'labels': [3.0], 'rect': (15, 14, 0, 0), 'size': 1},
+ {'labels': [4.0], 'rect': (0, 0, 61, 153), 'size': 4927},
+ {'labels': [5.0], 'rect': (0, 12, 61, 142), 'size': 177},
+ {'labels': [6.0], 'rect': (7, 54, 6, 17), 'size': 8},
+ {'labels': [7.0], 'rect': (28, 50, 18, 32), 'size': 22},
+ {'labels': [8.0], 'rect': (2, 99, 7, 24), 'size': 24},
+ {'labels': [9.0], 'rect': (14, 118, 79, 117), 'size': 4008}]
 ```
 
 See also an example/example.py which generates :
