@@ -282,7 +282,7 @@ def selective_search(
     while S != {}:
 
         # get highest similarity
-        i, j = sorted(list(S.items()), cmp=lambda a, b: cmp(a[1], b[1]))[-1][0]
+        i, j = sorted(list(S.items()), key=lambda s: s[1])[-1][0]
 
         # merge corresponding regions
         t = max(R.keys()) + 1.0
