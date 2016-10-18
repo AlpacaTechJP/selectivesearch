@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
+
 import skimage.io
 import skimage.feature
 import skimage.color
