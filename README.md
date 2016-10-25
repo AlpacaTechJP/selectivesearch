@@ -35,6 +35,36 @@ regions[:10]
 See also an example/example.py which generates :
 ![alt tag](https://github.com/AlpacaDB/selectivesearch/raw/develop/example/result.png)
 
+## Parameters of selective search
+
+Let's see this paper: http://cs.brown.edu/~pff/papers/seg-ijcv.pdf
+
+#### sigma
+
+```
+In general we use a Gaussian filter to
+smooth the image slightly before computing the edge weights, in order to compensate
+for digitization artifacts. We always use a Gaussian with σ = 0.8, which does not
+produce any visible change to the image but helps remove artifacts.
+```
+
+#### min_size
+
+If the rect size is reached on `min_size`, the calculation is stopped.
+
+#### scale
+
+```
+There is one runtime parameter for the algorithm, which is the value of k that
+is used to compute the threshold function τ . Recall we use the function τ (C) =
+14
+k/|C| where |C| is the number of elements in C. Thus k effectively sets a scale of
+observation, in that a larger k causes a preference for larger components. We use
+two different parameter settings for the examples in this section (and throughout the
+paper), depending on the resolution of the image and the degree to which fine detail
+is important in the scene.
+```
+
 ## Blog
 - EN: http://blog.alpaca.ai/open-source-pure-python-selective-search-and-advanced-object-recognition-with-labellio/
 - JP: http://blog-jp.alpaca.ai/entry/2015/08/05/235408
