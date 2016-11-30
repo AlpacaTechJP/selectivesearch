@@ -203,7 +203,7 @@ def _extract_neighbours(regions):
             return True
         return False
 
-    R = regions.items()
+    R = list(regions.items())
     neighbours = []
     for cur, a in enumerate(R[:-1]):
         for b in R[cur + 1:]:
@@ -282,7 +282,7 @@ def selective_search(
     while S != {}:
 
         # get highest similarity
-        i, j = sorted(S.items(), cmp=lambda a, b: cmp(a[1], b[1]))[-1][0]
+        i, j = sorted(S.items(), key=lambda i: i[1])[-1][0]
 
         # merge corresponding regions
         t = max(R.keys()) + 1.0
