@@ -1,6 +1,6 @@
 # Selective Search Implementation for Python
 
-This is a simple Selective Search Implementation for Python
+This is a specially modified version of Selective Search Implementation for Python3.
 
 ## Install
 
