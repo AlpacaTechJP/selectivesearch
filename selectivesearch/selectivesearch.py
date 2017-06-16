@@ -252,8 +252,9 @@ def selective_search(
         regions : array of dict
             [
                 {
-                    'rect': (left, top, right, bottom),
-                    'labels': [...]
+                    'rect': (left, top, width, height),
+                    'labels': [...],
+                    'size': component_size
                 },
                 ...
             ]
