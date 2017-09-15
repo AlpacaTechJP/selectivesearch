@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="selectivesearch",
-    version="0.3",
+    version="0.4",
     url="https://github.com/AlpacaDB/selectivesearch",
     description="Selective Search implementation for Python",
     author="AlpacaDB, Inc.",
@@ -12,6 +12,7 @@ setup(
         'Intended Audience :: Information Technology',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
     ],
     keywords='rcnn',
     packages=find_packages(),
