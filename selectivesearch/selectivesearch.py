@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
+
 import skimage.io
 import skimage.feature
 import skimage.color
@@ -176,7 +178,7 @@ def _extract_regions(img):
     tex_grad = _calc_texture_gradient(img)
 
     # pass 3: calculate colour histogram of each region
-    for k, v in R.items():
+    for k, v in list(R.items()):
 
         # colour histogram
         masked_pixels = hsv[:, :, :][img[:, :, 3] == k]
@@ -291,7 +293,7 @@ def selective_search(
 
         # mark similarities for regions to be removed
         key_to_delete = []
-        for k, v in S.items():
+        for k, v in list(S.items()):
             if (i in k) or (j in k):
                 key_to_delete.append(k)
 
@@ -300,12 +302,12 @@ def selective_search(
             del S[k]
 
         # calculate similarity set with the new region
-        for k in filter(lambda a: a != (i, j), key_to_delete):
+        for k in [a for a in key_to_delete if a != (i, j)]:
             n = k[1] if k[0] in (i, j) else k[0]
             S[(t, n)] = _calc_sim(R[t], R[n], imsize)
 
     regions = []
-    for k, r in R.items():
+    for k, r in list(R.items()):
         regions.append({
             'rect': (
                 r['min_x'], r['min_y'],
