@@ -254,8 +254,9 @@ def selective_search(
         regions : array of dict
             [
                 {
-                    'rect': (left, top, right, bottom),
-                    'labels': [...]
+                    'rect': (left, top, width, height),
+                    'labels': [...],
+                    'size': component_size
                 },
                 ...
             ]
@@ -284,7 +285,7 @@ def selective_search(
     while S != {}:
 
         # get highest similarity
-        i, j = sorted(list(S.items()), key=lambda s: s[1])[-1][0]
+        i, j = sorted(S.items(), key=lambda i: i[1])[-1][0]
 
         # merge corresponding regions
         t = max(R.keys()) + 1.0
