@@ -182,7 +182,7 @@ def _extract_regions(img):
 
         # colour histogram
         masked_pixels = hsv[:, :, :][img[:, :, 3] == k]
-        R[k]["size"] = len(masked_pixels / 4)
+        R[k]["size"] = len(masked_pixels)
         R[k]["hist_c"] = _calc_colour_hist(masked_pixels)
 
         # texture histogram
